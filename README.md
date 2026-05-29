@@ -1,6 +1,25 @@
-# The Aerial Guardian
+<div align="center">
+  <img src="assets/logo.png" alt="The Aerial Guardian Logo" width="200" height="200">
+  
+  # The Aerial Guardian
+  
+  **High-Performance Vehicle and Person Detection and Tracking from Drone Footage**
 
-### High-Performance Vehicle and Person Detection and Tracking from Drone Footage
+  <p>
+    <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python" />
+    <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white" alt="PyTorch" />
+    <img src="https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV" />
+    <img src="https://img.shields.io/badge/YOLOv8-00FFFF?style=for-the-badge&logo=Ultralytics&logoColor=black" alt="YOLOv8" />
+  </p>
+</div>
+
+<br>
+
+<div align="center">
+  <img src="assets/demo.png" alt="Drone Tracking Demo" width="600">
+</div>
+
+---
 
 A sophisticated computer vision pipeline for detecting and tracking multiple vehicles and persons from moving drone platforms. Optimized for small-scale object detection, drone ego-motion compensation, and edge hardware deployment.
 
@@ -39,7 +58,7 @@ A sophisticated computer vision pipeline for detecting and tracking multiple veh
 - OpenCV, PyTorch, Ultralytics YOLOv8
 
 ### Installation
-1. **Clone the repository (or navigate to the workspace)**
+1. **Clone the repository**
 ```bash
 git clone https://github.com/Manikeshmk/The_Aerial_Guardian
 cd The_Aerial_Guardian
