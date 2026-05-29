@@ -57,7 +57,7 @@ venv.bak/
 *.flv
 *.jpg
 *.jpeg
-*.png
+# *.png
 *.gif
 
 # Data
