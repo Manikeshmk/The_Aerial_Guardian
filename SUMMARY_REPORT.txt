@@ -1,0 +1,23 @@
+The Aerial Guardian - Summary Report
+
+1. Architecture and Small Object Detection
+Choice of Architecture: We utilized YOLOv8 Nano (YOLOv8n) as the core detector. YOLOv8n was chosen because it provides an excellent balance between inference speed and accuracy, and its model size (~6MB) easily satisfies the strict <300MB requirement, making it highly suitable for lightweight drone deployment. 
+
+Handling Small Objects: In high-altitude drone footage (like the VisDrone dataset), objects appear extremely small. We addressed this through multiple methods:
+- Preprocessing Pipeline: We implemented CLAHE (Contrast Limited Adaptive Histogram Equalization) and edge-sharpening to significantly boost the contrast of tiny vehicles before they enter the neural network.
+- Soft-NMS (Non-Maximum Suppression): Instead of traditional NMS, which blindly deletes overlapping bounding boxes in dense traffic, we use Soft-NMS. This decays the confidence of overlapping boxes rather than discarding them, preserving detections in dense, packed crowds.
+- Multi-Scale Inference: We process frames at high resolutions, allowing the multi-scale feature pyramids (P3-P5 layers in YOLO) to accurately detect features at the smallest pixel scales.
+
+2. Addressing "ID Switching" (Ego-Motion and Occlusions)
+Drone ego-motion causes the entire background and all vehicles to shift in the camera frame simultaneously, which confuses standard trackers and causes rapid ID swapping. 
+
+- Tracking Algorithm: We implemented ByteTrack, a highly robust MOT algorithm that associates both high-confidence and low-confidence bounding boxes to maintain tracks even when a small vehicle gets blurry and its detection confidence briefly drops.
+- Bounding Box Inflation: To handle fast-moving vehicles that might not overlap between consecutive frames, we dynamically inflate the bounding boxes by 50% during the Intersection over Union (IoU) matching phase. This ensures continuous ID assignment even at lower frame rates.
+- Ego-Motion Compensation & Occlusion Memory: We implemented a trajectory memory system controlled by a "max_age" grace period. If a car goes behind a tree, the tracker remembers its ID internally for up to 100 frames. Furthermore, we use optical flow ego-motion to artificially shift the hidden bounding box in sync with the moving background, so it perfectly re-aligns with the car when it re-emerges.
+
+3. Adapting to Edge Hardware (NVIDIA Jetson)
+Because drone systems operate on constrained battery power and compute (e.g., NVIDIA Jetson Orin Nano or Xavier NX), the pipeline must be highly optimized:
+
+- TensorRT Export: The YOLOv8n PyTorch model (.pt) can be exported directly to a TensorRT engine (.engine). This leverages the Jetson's specific hardware tensor cores, yielding a 3x to 5x speedup in inference.
+- Precision Reduction: We can deploy the model using FP16 (Half-Precision) or INT8 quantization. This cuts the memory footprint by 50% to 75% with almost zero loss in detection accuracy, leaving more memory for the ByteTrack arrays.
+- Pipeline Throttling: By utilizing the built-in `--skip-frames` parameter, we can throttle the heavy YOLO detector to run only every 2nd or 3rd frame. The tracker's motion prediction algorithms are robust enough to interpolate the missing frames, maintaining perfectly smooth tracking while drastically reducing GPU load, heat, and power consumption on the drone.
