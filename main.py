@@ -144,7 +144,7 @@ def main():
     parser.add_argument('--output', type=str, default='output/tracked_video.mp4', help='Output video path')
     parser.add_argument('--model', type=str, default='yolov8n.pt', help='YOLO model path')
     parser.add_argument('--conf', type=float, default=0.25, help='Detection confidence threshold')
-    parser.add_argument('--max-age', type=int, default=300, help='Max frames to keep track')
+    parser.add_argument('--max-age', type=int, default=100, help='Max frames to keep track')
     parser.add_argument('--skip-frames', type=int, default=0, help='Process every Nth frame')
     parser.add_argument('--preview', action='store_true', help='Show live preview')
     

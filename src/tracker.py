@@ -142,7 +142,8 @@ class DroneByteTrac:
         # Prepare output
         active_tracks = []
         for track in self.tracks:
-            if track.hits >= self.min_hits or self.frame_count < self.min_hits:
+            # Only visualize tracks that are actively being detected (age <= 3) to prevent ghosts
+            if track.hits >= self.min_hits and track.age <= 3:
                 if track.display_id is None:
                     track.display_id = self.next_display_id
                     self.next_display_id += 1
@@ -232,9 +233,15 @@ class DroneByteTrac:
     
     @staticmethod
     def _iou(box1: np.ndarray, box2: np.ndarray) -> float:
-        """Calculate Intersection over Union."""
-        x1_min, y1_min, x1_max, y1_max = box1
-        x2_min, y2_min, x2_max, y2_max = box2
+        """Calculate Intersection over Union with inflated boxes for fast small objects."""
+        # Inflate boxes by 50% to ensure fast-moving drone objects still overlap between frames
+        w1, h1 = box1[2] - box1[0], box1[3] - box1[1]
+        w2, h2 = box2[2] - box2[0], box2[3] - box2[1]
+        inf_x1, inf_y1 = w1 * 0.5, h1 * 0.5
+        inf_x2, inf_y2 = w2 * 0.5, h2 * 0.5
+        
+        x1_min, y1_min, x1_max, y1_max = box1[0]-inf_x1, box1[1]-inf_y1, box1[2]+inf_x1, box1[3]+inf_y1
+        x2_min, y2_min, x2_max, y2_max = box2[0]-inf_x2, box2[1]-inf_y2, box2[2]+inf_x2, box2[3]+inf_y2
         
         inter_xmin = max(x1_min, x2_min)
         inter_ymin = max(y1_min, y2_min)
