@@ -1,0 +1,34 @@
+detection:
+  model: yolov8n.pt
+  confidence_threshold: 0.45
+  input_size: 640
+  soft_nms_threshold: 0.45
+  enable_nms: true
+
+tracking:
+  max_age: 30
+  min_hits: 3
+  iou_threshold: 0.1
+  track_activation_threshold: 0.6
+  enable_ego_motion_compensation: true
+
+preprocessing:
+  enable_clahe: true
+  enable_sharpening: true
+  denoise: false
+  clahe_clip_limit: 2.0
+  clahe_tile_size: 8
+
+video:
+  target_fps: 20
+  skip_frames: 0
+  use_gpu: true
+
+inference:
+  batch_size: 1
+  num_threads: 4
+  fp16: false
+
+hardware:
+  device: auto # auto | cpu | cuda | jetson
+  target_hardware: desktop # desktop | jetson_nano | jetson_orin

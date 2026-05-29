@@ -22,6 +22,7 @@ class TrackState:
     last_detection_frame: int
     kalman_filter: Optional[object] = None
     trajectory: List[Tuple[float, float]] = None
+    display_id: Optional[int] = None
     
     def __post_init__(self):
         if self.trajectory is None:
@@ -56,6 +57,7 @@ class DroneByteTrac:
         
         self.tracks: List[TrackState] = []
         self.next_id = 1
+        self.next_display_id = 1
         self.frame_count = 0
         self.prev_frame = None
         
@@ -99,6 +101,7 @@ class DroneByteTrac:
             det = high_conf[det_idx]
             track.bbox = det[:4]
             track.confidence = det[4]
+            track.age = 1
             track.hits += 1
             track.hit_streak += 1
             track.last_detection_frame = self.frame_count
@@ -128,6 +131,8 @@ class DroneByteTrac:
         for track_idx in unmatched_tracks:
             self.tracks[track_idx].age += 1
             self.tracks[track_idx].hit_streak = 0
+            # Keep bounding box anchored to the real-world background during occlusion
+            self.tracks[track_idx].bbox = self._compensate_bbox(self.tracks[track_idx].bbox, ego_motion_delta)
         
         # Remove dead tracks
         self.tracks = [t for t in self.tracks 
@@ -138,9 +143,13 @@ class DroneByteTrac:
         active_tracks = []
         for track in self.tracks:
             if track.hits >= self.min_hits or self.frame_count < self.min_hits:
+                if track.display_id is None:
+                    track.display_id = self.next_display_id
+                    self.next_display_id += 1
+                    
                 x1, y1, x2, y2 = track.bbox
                 active_tracks.append({
-                    'track_id': track.id,
+                    'track_id': track.display_id,
                     'bbox': [x1, y1, x2, y2],
                     'confidence': track.confidence,
                     'age': track.age,
@@ -254,3 +263,4 @@ class DroneByteTrac:
         self.frame_count = 0
         self.prev_frame = None
         self.next_id = 1
+        self.next_display_id = 1

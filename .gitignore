@@ -1,0 +1,123 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Models and Data
+*.pt
+*.pth
+*.weights
+*.trt
+*.onnx
+*.engine
+
+# Videos and Images
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Data
+data/
+datasets/
+videos/
+*.zip
+*.tar.gz
+
+# Output and Logs
+output/
+logs/
+*.log
+results/
+*.json
+
+# System
+.env
+.env.local
+.env.*.local
+*.bak
+*.tmp
+**/node_modules/
+
+# IDE settings
+.vscode/settings.json
+.idea/workspace.xml
+
+# Temp files
+.ipynb_checkpoints
+*.ipynb_checkpoints
+*.pyc
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jetson specific
+*.trt
+cuda_cache/
+
+# Security, Secrets, and Keys (Do not push to public repo)
+secrets/
+keys/
+credentials/
+*.key
+*.pem
+*.cert
+*.crt
+*_rsa
+id_rsa
+id_rsa.pub
+*.token
+.env
+.env.*
+*.config.override

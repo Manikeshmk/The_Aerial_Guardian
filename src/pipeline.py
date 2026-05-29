@@ -233,7 +233,6 @@ class AerialDetector:
     @staticmethod
     def _id_to_color(track_id: int) -> Tuple[int, int, int]:
         """Generate consistent color for track ID."""
-        # Use deterministic color based on ID
-        np.random.seed(track_id)
-        color = tuple(np.random.randint(0, 255, 3).tolist())
-        return color
+        import random
+        rng = random.Random(track_id)
+        return (rng.randint(0, 255), rng.randint(0, 255), rng.randint(0, 255))

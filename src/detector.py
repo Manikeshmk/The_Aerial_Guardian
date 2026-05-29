@@ -26,12 +26,12 @@ class AerialDetector:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model.to(self.device)
         
-        # Person class ID in COCO dataset
-        self.person_class_id = 0
+        # Target classes in COCO dataset: 0 (Person), 1 (Bicycle), 2 (Car), 3 (Motorcycle), 5 (Bus), 6 (Train), 7 (Truck)
+        self.target_classes = [0, 1, 2, 3, 5, 6, 7]
         
     def detect(self, frame: np.ndarray, target_size: Optional[int] = None) -> np.ndarray:
         """
-        Detect persons in frame.
+        Detect target classes in frame.
         
         Args:
             frame: Input image
@@ -47,16 +47,19 @@ class AerialDetector:
             if scale < 1:
                 new_w, new_h = int(w * scale), int(h * scale)
                 frame_resized = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
-                scale_factor = h / new_h
+                scale_factor_x = w / new_w
+                scale_factor_y = h / new_h
             else:
                 frame_resized = frame
-                scale_factor = 1.0
+                scale_factor_x = 1.0
+                scale_factor_y = 1.0
         else:
             frame_resized = frame
-            scale_factor = 1.0
+            scale_factor_x = 1.0
+            scale_factor_y = 1.0
         
         # Run inference
-        results = self.model(frame_resized, conf=self.conf_threshold, classes=[self.person_class_id], verbose=False)
+        results = self.model(frame_resized, conf=self.conf_threshold, classes=self.target_classes, verbose=False)
         
         # Extract detections
         detections = []
@@ -68,7 +71,7 @@ class AerialDetector:
                 cls_id = box.cls[0]
                 
                 # Scale back to original frame size
-                x1, y1, x2, y2 = x1 * scale_factor, y1 * scale_factor, x2 * scale_factor, y2 * scale_factor
+                x1, y1, x2, y2 = x1 * scale_factor_x, y1 * scale_factor_y, x2 * scale_factor_x, y2 * scale_factor_y
                 detections.append([x1, y1, x2, y2, conf, cls_id])
         
         return np.array(detections) if detections else np.empty((0, 6))
