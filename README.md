@@ -41,7 +41,7 @@ A sophisticated computer vision pipeline for detecting and tracking multiple veh
 ### Installation
 1. **Clone the repository (or navigate to the workspace)**
 ```bash
-git clone <your-repo-link>
+git clone https://github.com/Manikeshmk/The_Aerial_Guardian
 cd The_Aerial_Guardian
 ```
 
